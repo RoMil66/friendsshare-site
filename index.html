@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FriendsShare — Gemeinsame Ausgaben teilen & abrechnen</title>
+    <meta name="description" content="FriendsShare hilft Familien und Freunden, gemeinsame Ausgaben zu tracken und am Monatsende fair abzurechnen — mit iCloud-Sync, ohne Konto, ohne Werbung.">
+    <style>
+        :root {
+            --bg: #fbfbfd; --bg-alt: #f5f5f7; --text: #1d1d1f; --text2: #6e6e73;
+            --accent: #16a37f; --accent-hover: #13906f; --green: #30d158;
+            --card-bg: #fff; --card-border: #e8e8ed;
+            --hero-gradient: linear-gradient(180deg, #f5f5f7 0%, #fbfbfd 100%);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #000; --bg-alt: #1c1c1e; --text: #f5f5f7; --text2: #98989d;
+                --accent: #2fd0a4; --accent-hover: #45dbb3;
+                --card-bg: #1c1c1e; --card-border: #38383a;
+                --hero-gradient: linear-gradient(180deg, #1c1c1e 0%, #000 100%);
+            }
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+            line-height: 1.5; color: var(--text); background: var(--bg);
+            -webkit-font-smoothing: antialiased;
+        }
+        nav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(251,251,253,0.72);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--card-border); padding: 0 20px;
+        }
+        @media (prefers-color-scheme: dark) { nav { background: rgba(0,0,0,0.72); } }
+        .nav-inner {
+            max-width: 980px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between; height: 48px;
+        }
+        .nav-brand { font-size: 18px; font-weight: 700; color: var(--text); text-decoration: none; }
+        .nav-links { display: flex; align-items: center; }
+        .nav-links a {
+            font-size: 13px; color: var(--text2); text-decoration: none;
+            margin-left: 24px; transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--text); }
+        .hero { background: var(--hero-gradient); text-align: center; padding: 80px 20px 60px; }
+        .hero-icon {
+            width: 128px; height: 128px; border-radius: 28px;
+            background: linear-gradient(135deg, #16a37f 0%, #30d158 100%);
+            margin: 0 auto 24px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 30px rgba(22,163,127,0.3);
+        }
+        .hero-icon svg { width: 66px; height: 66px; fill: #fff; }
+        .hero h1 {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+            font-size: 48px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 12px;
+        }
+        .hero .tagline { font-size: 21px; color: var(--text2); max-width: 580px; margin: 0 auto 32px; }
+        .hero .cta {
+            display: inline-block; background: var(--accent); color: #fff;
+            padding: 14px 32px; border-radius: 12px;
+            font-size: 17px; font-weight: 600; text-decoration: none; transition: background 0.2s;
+        }
+        .hero .cta:hover { background: var(--accent-hover); }
+        .hero .price { font-size: 14px; color: var(--text2); margin-top: 12px; }
+        .screenshot-section { text-align: center; padding: 40px 20px 80px; background: var(--bg); }
+        .screenshot-container {
+            max-width: 320px; margin: 0 auto; border-radius: 28px; overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+        @media (prefers-color-scheme: dark) { .screenshot-container { box-shadow: 0 20px 60px rgba(0,0,0,0.5); } }
+        .screenshot-container img { width: 100%; display: block; }
+        .screenshot-tabs { display: flex; justify-content: center; gap: 8px; margin-top: 24px; flex-wrap: wrap; }
+        .screenshot-tabs button {
+            background: var(--bg-alt); border: 1px solid var(--card-border);
+            color: var(--text2); padding: 8px 16px; border-radius: 8px;
+            font-size: 13px; cursor: pointer; transition: all 0.2s; font-family: inherit;
+        }
+        .screenshot-tabs button:hover, .screenshot-tabs button.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+        .features { padding: 80px 20px; background: var(--bg-alt); }
+        .features-inner { max-width: 980px; margin: 0 auto; }
+        .features h2 {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+            font-size: 36px; font-weight: 700; text-align: center; margin-bottom: 48px;
+        }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+        .feature-card {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 16px; padding: 28px; transition: transform 0.2s;
+        }
+        .feature-card:hover { transform: translateY(-2px); }
+        .feature-icon { font-size: 32px; margin-bottom: 12px; }
+        .feature-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+        .feature-card p { font-size: 14px; color: var(--text2); line-height: 1.5; }
+        .privacy-section { padding: 80px 20px; background: var(--bg); text-align: center; }
+        .privacy-section h2 {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+            font-size: 36px; font-weight: 700; margin-bottom: 16px;
+        }
+        .privacy-section .subtitle { font-size: 18px; color: var(--text2); max-width: 620px; margin: 0 auto 40px; }
+        .privacy-badges { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; }
+        .privacy-badge { text-align: center; width: 150px; }
+        .privacy-badge .icon { font-size: 40px; margin-bottom: 8px; }
+        .privacy-badge .label { font-size: 14px; font-weight: 600; }
+        .privacy-badge .desc { font-size: 12px; color: var(--text2); margin-top: 4px; }
+        .requirements { padding: 60px 20px; background: var(--bg-alt); }
+        .requirements-inner { max-width: 640px; margin: 0 auto; text-align: center; }
+        .requirements h2 { font-size: 24px; font-weight: 700; margin-bottom: 24px; }
+        .req-list { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+        .req-item { text-align: center; }
+        .req-item .val { font-size: 20px; font-weight: 700; }
+        .req-item .lbl { font-size: 13px; color: var(--text2); margin-top: 4px; }
+        .cta-bottom { padding: 80px 20px; background: var(--bg); text-align: center; }
+        .cta-bottom h2 {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+            font-size: 36px; font-weight: 700; margin-bottom: 12px;
+        }
+        .cta-bottom .sub { font-size: 18px; color: var(--text2); margin-bottom: 32px; }
+        .cta-bottom .cta {
+            display: inline-block; background: var(--accent); color: #fff;
+            padding: 14px 32px; border-radius: 12px;
+            font-size: 17px; font-weight: 600; text-decoration: none; transition: background 0.2s;
+        }
+        .cta-bottom .cta:hover { background: var(--accent-hover); }
+        footer {
+            padding: 40px 20px; border-top: 1px solid var(--card-border);
+            text-align: center; font-size: 13px; color: var(--text2);
+        }
+        footer a { color: var(--text2); text-decoration: none; margin: 0 12px; }
+        footer a:hover { color: var(--text); }
+        footer .copy { margin-top: 12px; }
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 32px; }
+            .hero .tagline { font-size: 17px; }
+            .features h2, .privacy-section h2, .cta-bottom h2 { font-size: 28px; }
+        }
+        .lang-toggle {
+            background: var(--bg-alt); border: 1px solid var(--card-border);
+            color: var(--text2); padding: 4px 10px; border-radius: 6px;
+            font-size: 12px; cursor: pointer; font-family: inherit;
+            margin-left: 16px; transition: all 0.2s;
+        }
+        .lang-toggle:hover { color: var(--text); border-color: var(--text2); }
+        [lang-content]:not(.active-lang) { display: none; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-inner">
+        <a href="#" class="nav-brand">FriendsShare</a>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#privacy" lang-content="de" class="active-lang">Datenschutz</a>
+            <a href="#privacy" lang-content="en">Privacy</a>
+            <a href="support.html">Support</a>
+            <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">EN</button>
+        </div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 7.5V6c0-1.1-.9-2-2-2H5C3.9 4 3 4.9 3 6v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-1.5c.6-.35 1-.99 1-1.73v-3.54c0-.74-.4-1.38-1-1.73zM20 12.5v3H15c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5h5zM5 18V6h14v3h-4c-1.66 0-3 1.34-3 3s1.34 3 3 3h4v3H5z"/>
+        </svg>
+    </div>
+    <h1>FriendsShare</h1>
+    <p class="tagline" lang-content="de" class="active-lang">Gemeinsame Ausgaben mit Familie und Freunden tracken — und am Monatsende fair abrechnen. Ganz einfach.</p>
+    <p class="tagline" lang-content="en">Track shared expenses with family and friends — and settle up fairly at the end of the month. Effortlessly.</p>
+    <a class="cta" href="https://apps.apple.com/app/id6793031462" lang-content="de" class="active-lang">Im App Store laden</a>
+    <a class="cta" href="https://apps.apple.com/app/id6793031462" lang-content="en">Download on the App Store</a>
+    <p class="price" lang-content="de" class="active-lang">Kostenlos · Keine Werbung · Kein Konto nötig · iPhone &amp; iPad</p>
+    <p class="price" lang-content="en">Free · No ads · No account required · iPhone &amp; iPad</p>
+</section>
+
+<section class="screenshot-section" id="screenshot">
+    <div class="screenshot-container">
+        <img id="screenshot-img" src="screenshots/iphone-expenses.png" alt="FriendsShare — Ausgaben" loading="lazy">
+    </div>
+    <div class="screenshot-tabs">
+        <button class="active" onclick="switchScreenshot('iphone-expenses', this)" lang-content="de" class="active-lang">Ausgaben</button>
+        <button onclick="switchScreenshot('iphone-balance', this)" lang-content="de" class="active-lang">Saldo</button>
+        <button onclick="switchScreenshot('iphone-stats', this)" lang-content="de" class="active-lang">Statistik</button>
+        <button class="active" onclick="switchScreenshot('iphone-expenses', this)" lang-content="en">Expenses</button>
+        <button onclick="switchScreenshot('iphone-balance', this)" lang-content="en">Balance</button>
+        <button onclick="switchScreenshot('iphone-stats', this)" lang-content="en">Statistics</button>
+    </div>
+</section>
+
+<section class="features" id="features">
+    <div class="features-inner">
+        <h2 lang-content="de" class="active-lang">Alles für die faire Abrechnung.</h2>
+        <h2 lang-content="en">Everything for a fair split.</h2>
+        <div class="feature-grid" lang-content="de" class="active-lang">
+            <div class="feature-card"><div class="feature-icon">🧾</div><h3>Ausgaben erfassen</h3><p>Wer hat bezahlt, wie viel, wofür? In Sekunden eingetragen — mit automatisch erkannter Kategorie.</p></div>
+            <div class="feature-card"><div class="feature-icon">⚖️</div><h3>Wer schuldet wem</h3><p>FriendsShare berechnet am Monatsende die minimale Anzahl an Zahlungen, um alles auszugleichen.</p></div>
+            <div class="feature-card"><div class="feature-icon">📊</div><h3>Prozentuale Aufteilung</h3><p>50/50 als Standard, oder pro Ausgabe frei wählbar. Einzelne Personen lassen sich ausschließen.</p></div>
+            <div class="feature-card"><div class="feature-icon">🗂️</div><h3>Projekte &amp; Gruppen</h3><p>Ein laufender Haushalt plus eigene Projekte für Urlaub, Feiern oder die Gesamt-Endabrechnung.</p></div>
+            <div class="feature-card"><div class="feature-icon">💸</div><h3>Direkt bezahlen</h3><p>Offene Beträge sofort begleichen — per Bank-QR-Code (GiroCode), PayPal oder Revolut.</p></div>
+            <div class="feature-card"><div class="feature-icon">👨‍👩‍👧</div><h3>Projekt teilen</h3><p>Lade Familie oder Freunde über iCloud ein. Alle sehen dieselben Ausgaben und Salden — live.</p></div>
+            <div class="feature-card"><div class="feature-icon">📈</div><h3>Statistik &amp; Export</h3><p>Ausgaben nach Kategorie und Person auswerten. Export als CSV oder PDF.</p></div>
+            <div class="feature-card"><div class="feature-icon">☁️</div><h3>iCloud-Sync</h3><p>Deine Daten synchronisieren automatisch zwischen deinen Geräten — sicher über deine private iCloud.</p></div>
+            <div class="feature-card"><div class="feature-icon">🌗</div><h3>Deutsch &amp; Englisch</h3><p>Vollständig zweisprachig, mit Dark Mode und Light Mode. Für iPhone und iPad.</p></div>
+        </div>
+        <div class="feature-grid" lang-content="en">
+            <div class="feature-card"><div class="feature-icon">🧾</div><h3>Log expenses</h3><p>Who paid, how much, for what? Added in seconds — with an automatically detected category.</p></div>
+            <div class="feature-card"><div class="feature-icon">⚖️</div><h3>Who owes whom</h3><p>At the end of the month FriendsShare computes the minimum number of payments to settle everything.</p></div>
+            <div class="feature-card"><div class="feature-icon">📊</div><h3>Percentage split</h3><p>50/50 by default, or freely adjustable per expense. Individual people can be excluded.</p></div>
+            <div class="feature-card"><div class="feature-icon">🗂️</div><h3>Projects &amp; groups</h3><p>One ongoing household plus your own projects for holidays, parties or a final settlement.</p></div>
+            <div class="feature-card"><div class="feature-icon">💸</div><h3>Pay directly</h3><p>Settle open amounts right away — via bank QR code (GiroCode), PayPal or Revolut.</p></div>
+            <div class="feature-card"><div class="feature-icon">👨‍👩‍👧</div><h3>Share a project</h3><p>Invite family or friends via iCloud. Everyone sees the same expenses and balances — live.</p></div>
+            <div class="feature-card"><div class="feature-icon">📈</div><h3>Statistics &amp; export</h3><p>Analyze spending by category and person. Export as CSV or PDF.</p></div>
+            <div class="feature-card"><div class="feature-icon">☁️</div><h3>iCloud sync</h3><p>Your data syncs automatically across your devices — securely via your private iCloud.</p></div>
+            <div class="feature-card"><div class="feature-icon">🌗</div><h3>English &amp; German</h3><p>Fully bilingual, with Dark Mode and Light Mode. For iPhone and iPad.</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="privacy-section" id="privacy">
+    <h2 lang-content="de" class="active-lang">Deine Daten gehören dir.</h2>
+    <h2 lang-content="en">Your data belongs to you.</h2>
+    <p class="subtitle" lang-content="de" class="active-lang">FriendsShare hat keine eigenen Server. Deine Ausgaben bleiben auf deinem Gerät und in deiner privaten iCloud. Kein Konto, kein Tracking, keine Werbung — der Entwickler hat keinen Zugriff auf deine Daten.</p>
+    <p class="subtitle" lang-content="en">FriendsShare has no servers of its own. Your expenses stay on your device and in your private iCloud. No account, no tracking, no ads — the developer has no access to your data.</p>
+    <div class="privacy-badges" lang-content="de" class="active-lang">
+        <div class="privacy-badge"><div class="icon">🔒</div><div class="label">Keine eigenen Server</div><div class="desc">Sync nur über deine private iCloud (Apple)</div></div>
+        <div class="privacy-badge"><div class="icon">🚫</div><div class="label">Kein Tracking</div><div class="desc">Keine Analyse-SDKs, keine Werbung</div></div>
+        <div class="privacy-badge"><div class="icon">🙅</div><div class="label">Kein Konto</div><div class="desc">Keine Registrierung, kein Login</div></div>
+        <div class="privacy-badge"><div class="icon">🤝</div><div class="label">Du teilst bewusst</div><div class="desc">Nur die Projekte, die du aktiv teilst</div></div>
+    </div>
+    <div class="privacy-badges" lang-content="en">
+        <div class="privacy-badge"><div class="icon">🔒</div><div class="label">No own servers</div><div class="desc">Sync only via your private iCloud (Apple)</div></div>
+        <div class="privacy-badge"><div class="icon">🚫</div><div class="label">No tracking</div><div class="desc">No analytics SDKs, no ads</div></div>
+        <div class="privacy-badge"><div class="icon">🙅</div><div class="label">No account</div><div class="desc">No sign-up, no login</div></div>
+        <div class="privacy-badge"><div class="icon">🤝</div><div class="label">You choose to share</div><div class="desc">Only the projects you actively share</div></div>
+    </div>
+</section>
+
+<section class="requirements">
+    <div class="requirements-inner">
+        <h2 lang-content="de" class="active-lang">Systemanforderungen</h2>
+        <h2 lang-content="en">System Requirements</h2>
+        <div class="req-list">
+            <div class="req-item"><div class="val">iOS 17+</div><div class="lbl" lang-content="de" class="active-lang">iPhone &amp; iPad</div><div class="lbl" lang-content="en">iPhone &amp; iPad</div></div>
+            <div class="req-item"><div class="val">iCloud</div><div class="lbl" lang-content="de" class="active-lang">für Sync &amp; Teilen (optional)</div><div class="lbl" lang-content="en">for sync &amp; sharing (optional)</div></div>
+            <div class="req-item"><div class="val">Gratis</div><div class="lbl" lang-content="de" class="active-lang">ohne In-App-Käufe</div><div class="lbl" lang-content="en">no in-app purchases</div></div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-bottom">
+    <h2 lang-content="de" class="active-lang">Nie wieder Zettel und Kopfrechnen.</h2>
+    <h2 lang-content="en">No more notes and mental math.</h2>
+    <p class="sub" lang-content="de" class="active-lang">Kostenlos. Kein Konto. Für iPhone und iPad.</p>
+    <p class="sub" lang-content="en">Free. No account. For iPhone and iPad.</p>
+    <a class="cta" href="https://apps.apple.com/app/id6793031462" lang-content="de" class="active-lang">Im App Store laden</a>
+    <a class="cta" href="https://apps.apple.com/app/id6793031462" lang-content="en">Download on the App Store</a>
+</section>
+
+<footer>
+    <div>
+        <a href="privacy.html" lang-content="de" class="active-lang">Datenschutz</a>
+        <a href="privacy.html" lang-content="en">Privacy Policy</a>
+        <a href="support.html">Support</a>
+        <a href="mailto:AppsByRoMil66@outlook.com">Kontakt / Contact</a>
+    </div>
+    <div class="copy">© 2026 Robert Milberger. Alle Rechte vorbehalten / All rights reserved.</div>
+</footer>
+
+<script>
+var currentLang = 'de';
+function setLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll('[lang-content]').forEach(function(el) {
+        el.classList.toggle('active-lang', el.getAttribute('lang-content') === lang);
+    });
+    document.getElementById('lang-btn').textContent = lang === 'de' ? 'EN' : 'DE';
+    document.documentElement.lang = lang;
+}
+function toggleLang() { setLang(currentLang === 'de' ? 'en' : 'de'); }
+function switchScreenshot(name, btn) {
+    document.getElementById('screenshot-img').src = 'screenshots/' + name + '.png';
+    document.querySelectorAll('.screenshot-tabs button').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+}
+</script>
+</body>
+</html>
