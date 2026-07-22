@@ -181,15 +181,19 @@
 
 <section class="screenshot-section" id="screenshot">
     <div class="screenshot-container">
-        <img id="screenshot-img" src="screenshots/iphone-expenses.png" alt="FriendsShare — Ausgaben" loading="lazy">
+        <img id="screenshot-img" src="screenshots/iphone-de-expenses.png" alt="FriendsShare — Ausgaben" loading="lazy">
     </div>
     <div class="screenshot-tabs">
-        <button class="active" onclick="switchScreenshot('iphone-expenses', this)" lang-content="de" class="active-lang">Ausgaben</button>
-        <button onclick="switchScreenshot('iphone-balance', this)" lang-content="de" class="active-lang">Saldo</button>
-        <button onclick="switchScreenshot('iphone-stats', this)" lang-content="de" class="active-lang">Statistik</button>
-        <button class="active" onclick="switchScreenshot('iphone-expenses', this)" lang-content="en">Expenses</button>
-        <button onclick="switchScreenshot('iphone-balance', this)" lang-content="en">Balance</button>
-        <button onclick="switchScreenshot('iphone-stats', this)" lang-content="en">Statistics</button>
+        <button class="active" onclick="switchScreenshot('expenses', this)" lang-content="de" class="active-lang">Ausgaben</button>
+        <button onclick="switchScreenshot('balance', this)" lang-content="de" class="active-lang">Saldo</button>
+        <button onclick="switchScreenshot('stats', this)" lang-content="de" class="active-lang">Statistik</button>
+        <button onclick="switchScreenshot('project', this)" lang-content="de" class="active-lang">Projekt &amp; Teilen</button>
+        <button onclick="switchScreenshot('members', this)" lang-content="de" class="active-lang">Mitglieder</button>
+        <button class="active" onclick="switchScreenshot('expenses', this)" lang-content="en">Expenses</button>
+        <button onclick="switchScreenshot('balance', this)" lang-content="en">Balance</button>
+        <button onclick="switchScreenshot('stats', this)" lang-content="en">Statistics</button>
+        <button onclick="switchScreenshot('project', this)" lang-content="en">Project &amp; Sharing</button>
+        <button onclick="switchScreenshot('members', this)" lang-content="en">Members</button>
     </div>
 </section>
 
@@ -203,7 +207,7 @@
             <div class="feature-card"><div class="feature-icon">📊</div><h3>Prozentuale Aufteilung</h3><p>50/50 als Standard, oder pro Ausgabe frei wählbar. Einzelne Personen lassen sich ausschließen.</p></div>
             <div class="feature-card"><div class="feature-icon">🗂️</div><h3>Projekte &amp; Gruppen</h3><p>Ein laufender Haushalt plus eigene Projekte für Urlaub, Feiern oder die Gesamt-Endabrechnung.</p></div>
             <div class="feature-card"><div class="feature-icon">💸</div><h3>Direkt bezahlen</h3><p>Offene Beträge sofort begleichen — per Bank-QR-Code (GiroCode), PayPal oder Revolut.</p></div>
-            <div class="feature-card"><div class="feature-icon">👨‍👩‍👧</div><h3>Projekt teilen</h3><p>Lade Familie oder Freunde über iCloud ein. Alle sehen dieselben Ausgaben und Salden — live.</p></div>
+            <div class="feature-card"><div class="feature-icon">👨‍👩‍👧</div><h3>Anlegen &amp; einladen</h3><p>Leg ein Projekt an und lade Freunde, Familie oder Mitarbeiter per iCloud-Link ein. Alle sehen dieselben Ausgaben und Salden — live.</p></div>
             <div class="feature-card"><div class="feature-icon">📈</div><h3>Statistik &amp; Export</h3><p>Ausgaben nach Kategorie und Person auswerten. Export als CSV oder PDF.</p></div>
             <div class="feature-card"><div class="feature-icon">☁️</div><h3>iCloud-Sync</h3><p>Deine Daten synchronisieren automatisch zwischen deinen Geräten — sicher über deine private iCloud.</p></div>
             <div class="feature-card"><div class="feature-icon">🌗</div><h3>Deutsch &amp; Englisch</h3><p>Vollständig zweisprachig, mit Dark Mode und Light Mode. Für iPhone und iPad.</p></div>
@@ -214,7 +218,7 @@
             <div class="feature-card"><div class="feature-icon">📊</div><h3>Percentage split</h3><p>50/50 by default, or freely adjustable per expense. Individual people can be excluded.</p></div>
             <div class="feature-card"><div class="feature-icon">🗂️</div><h3>Projects &amp; groups</h3><p>One ongoing household plus your own projects for holidays, parties or a final settlement.</p></div>
             <div class="feature-card"><div class="feature-icon">💸</div><h3>Pay directly</h3><p>Settle open amounts right away — via bank QR code (GiroCode), PayPal or Revolut.</p></div>
-            <div class="feature-card"><div class="feature-icon">👨‍👩‍👧</div><h3>Share a project</h3><p>Invite family or friends via iCloud. Everyone sees the same expenses and balances — live.</p></div>
+            <div class="feature-card"><div class="feature-icon">👨‍👩‍👧</div><h3>Create &amp; invite</h3><p>Create a project and invite friends, family or coworkers via an iCloud link. Everyone sees the same expenses and balances — live.</p></div>
             <div class="feature-card"><div class="feature-icon">📈</div><h3>Statistics &amp; export</h3><p>Analyze spending by category and person. Export as CSV or PDF.</p></div>
             <div class="feature-card"><div class="feature-icon">☁️</div><h3>iCloud sync</h3><p>Your data syncs automatically across your devices — securely via your private iCloud.</p></div>
             <div class="feature-card"><div class="feature-icon">🌗</div><h3>English &amp; German</h3><p>Fully bilingual, with Dark Mode and Light Mode. For iPhone and iPad.</p></div>
@@ -274,6 +278,10 @@
 
 <script>
 var currentLang = 'de';
+var currentScreen = 'expenses';
+function screenshotSrc() {
+    return 'screenshots/iphone' + (currentLang === 'de' ? '-de' : '') + '-' + currentScreen + '.png';
+}
 function setLang(lang) {
     currentLang = lang;
     document.querySelectorAll('[lang-content]').forEach(function(el) {
@@ -281,12 +289,18 @@ function setLang(lang) {
     });
     document.getElementById('lang-btn').textContent = lang === 'de' ? 'EN' : 'DE';
     document.documentElement.lang = lang;
+    document.getElementById('screenshot-img').src = screenshotSrc();
 }
 function toggleLang() { setLang(currentLang === 'de' ? 'en' : 'de'); }
-function switchScreenshot(name, btn) {
-    document.getElementById('screenshot-img').src = 'screenshots/' + name + '.png';
+function switchScreenshot(screen, btn) {
+    currentScreen = screen;
+    document.getElementById('screenshot-img').src = screenshotSrc();
     document.querySelectorAll('.screenshot-tabs button').forEach(function(b) { b.classList.remove('active'); });
-    btn.classList.add('active');
+    // activate matching buttons in the current language row
+    document.querySelectorAll('.screenshot-tabs button.active-lang').forEach(function(b) {
+        if (b.getAttribute('onclick').indexOf("'" + screen + "'") !== -1) b.classList.add('active');
+    });
+    if (btn) btn.classList.add('active');
 }
 </script>
 </body>
